@@ -2,7 +2,7 @@
 
 NekiVK is a modern C++23 utility toolkit designed to accelerate the development of Vulkan applications. It encapsulates some of the more verbose and boilerplate-heavy aspects of the Vulkan API into a set of a clean, reusable, and self-managing (RAII) C++ classes. It aims to accomplish this while still providing the full feature set and configurability of the underlying API.
 
-This library primarily serves as a personal learning project of mine in an effort to develop a deep understand for modern graphics APIs and professional software architecture. In this sense, it's built to prioritise clarity and flexibility over enforcing a rigid engine structure.
+This library primarily serves as a personal learning project of mine in an effort to develop a deep understanding for modern graphics APIs and professional software architecture. In this sense, it's built to prioritise clarity and flexibility over enforcing a rigid engine structure.
 
 ![Language](https://img.shields.io/badge/Language-C++23-pink.svg)
 ![CMake](https://img.shields.io/badge/CMake-3.28+-pink.svg)
