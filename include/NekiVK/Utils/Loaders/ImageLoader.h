@@ -21,8 +21,8 @@ struct ImageData
 class ImageLoader
 {
 public:
-	static ImageData Load(const std::string& filepath);
-	static void Free(void* pixels);
+	static ImageData Load(const std::string& _filepath);
+	static void Free(void* _pixels);
 };
 
 
