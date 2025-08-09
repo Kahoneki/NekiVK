@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 #Define library target
-file(GLOB_RECURSE NEKIVK_SOURCES "${CMAKE_SOURCE_DIR}/src/*.cpp")
+file(GLOB_RECURSE NEKIVK_SOURCES "src/*.cpp")
 add_library(NekiVK STATIC ${NEKIVK_SOURCES})
 target_include_directories(NekiVK PUBLIC include)
 
