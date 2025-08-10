@@ -101,6 +101,7 @@ namespace Neki
 			case VK_LOGGER_LAYER::PIPELINE:			return "[PIPELINE]";
 			case VK_LOGGER_LAYER::BUFFER_FACTORY:	return "[BUFFER FACTORY]";
 			case VK_LOGGER_LAYER::IMAGE_FACTORY:	return "[IMAGE FACTORY]";
+			case VK_LOGGER_LAYER::MODEL_FACTORY:	return "[MODEL FACTORY]";
 			case VK_LOGGER_LAYER::APPLICATION:		return "[APPLICATION]";
 			default:								return "[UNDEFINED]";
 		}

@@ -19,8 +19,10 @@
 
 #include "Memory/BufferFactory.h"
 #include "Memory/ImageFactory.h"
+#include "Memory/ModelFactory.h"
 
 #include "Utils/Loaders/ImageLoader.h"
+#include "Utils/Loaders/ModelLoader.h"
 #include "Utils/Strings/format.h"
 #include "Utils/Templates/enum_enable_bitmask_operators.h"
 
