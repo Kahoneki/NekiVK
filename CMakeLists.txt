@@ -50,7 +50,7 @@ target_link_libraries(NekiVK PRIVATE assimp)
 
 
 #Copy all NekiVK resource files to the output directory, maintaining subdirectory structure
-file(COPY "${CMAKE_SOURCE_DIR}/NekiVK Resource Files/" DESTINATION "${CMAKE_BINARY_DIR}/NekiVK Resource Files/")
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/NekiVK Resource Files/" DESTINATION "${CMAKE_BINARY_DIR}/NekiVK Resource Files/")
 
 
 
