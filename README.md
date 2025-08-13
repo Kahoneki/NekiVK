@@ -66,6 +66,5 @@ Classes currently available in NekiVK (and their underlying responsibilities) ar
 - **`VulkanSwapchain`:** `GLFWwindow`, `VkSurfaceKHR`, `VkSwapchainKHR`, and `VkImage`s and `VkImageView`s (swapchain images and views)
 - **`BufferFactory`:** `VkBuffer`s and `VkDeviceMemory`s
 - **`ImageFactory`:** `VkImage`s, `VkImageView`s, `VkDeviceMemory`s, and `VkSampler`s
-- **`ModelFactory`:** `VkBuffer`s for vertex and index buffers
 - **`VKDebugAllocator`:** Optional debug allocator with `VkAllocationCallbacks*`-cast operator overload. Tracks allocations and frees, providing an error message if a memory leak is detected
 - **`VKLogger`:** Custom logger with support for channel and layer configuration (e.g.: receiving all output from `DEVICE` layer but only error output from `IMAGE_FACTORY` layer)
