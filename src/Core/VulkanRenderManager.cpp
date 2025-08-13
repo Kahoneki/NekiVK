@@ -17,12 +17,12 @@ VulkanRenderManager::VulkanRenderManager(const VKLogger& _logger, VKDebugAllocat
 	framesInFlight = _framesInFlight;
 	imageIndex = 0;
 	currentFrame = 0;
-	
+
 	logger.Log(VK_LOGGER_CHANNEL::HEADING, VK_LOGGER_LAYER::RENDER_MANAGER, "\n\n\n", VK_LOGGER_WIDTH::DEFAULT, false);
 	logger.Log(VK_LOGGER_CHANNEL::HEADING, VK_LOGGER_LAYER::RENDER_MANAGER, "Creating Render Manager\n");
 
-	defaultDepthTextureFormat = device.FindSupportedFormat({VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT}, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
-	
+	defaultDepthTextureFormat = device.FindSupportedFormat({ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+
 	AllocateCommandBuffers();
 	CreateRenderPass(_renderPassDesc);
 	CreateSwapchainFramebuffers(_renderPassDesc);
@@ -33,7 +33,7 @@ VulkanRenderManager::VulkanRenderManager(const VKLogger& _logger, VKDebugAllocat
 
 VulkanRenderManager::~VulkanRenderManager()
 {
-	logger.Log(VK_LOGGER_CHANNEL::HEADING, VK_LOGGER_LAYER::RENDER_MANAGER,"Shutting down VulkanRenderManager\n");
+	logger.Log(VK_LOGGER_CHANNEL::HEADING, VK_LOGGER_LAYER::RENDER_MANAGER, "Shutting down VulkanRenderManager\n");
 
 	if (!inFlightFences.empty())
 	{
@@ -44,7 +44,7 @@ VulkanRenderManager::~VulkanRenderManager()
 				vkDestroyFence(device.GetDevice(), f, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator));
 			}
 		}
-		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER,"  In-Flight Fences Destroyed\n");
+		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER, "  In-Flight Fences Destroyed\n");
 	}
 	inFlightFences.clear();
 	imagesInFlight.clear();
@@ -58,7 +58,7 @@ VulkanRenderManager::~VulkanRenderManager()
 				vkDestroySemaphore(device.GetDevice(), s, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator));
 			}
 		}
-		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER,"  Render-Finished Semaphores Destroyed\n");
+		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER, "  Render-Finished Semaphores Destroyed\n");
 	}
 	renderFinishedSemaphores.clear();
 
@@ -71,27 +71,27 @@ VulkanRenderManager::~VulkanRenderManager()
 				vkDestroySemaphore(device.GetDevice(), s, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator));
 			}
 		}
-		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER,"  Image-Available Semaphores Destroyed\n");
+		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER, "  Image-Available Semaphores Destroyed\n");
 	}
 	imageAvailableSemaphores.clear();
-	
+
 	if (!swapchainFramebuffers.empty())
 	{
 		for (VkFramebuffer f : swapchainFramebuffers)
 		{
 			vkDestroyFramebuffer(device.GetDevice(), f, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator));
 		}
-		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER,"  Swapchain Framebuffers Destroyed\n");
+		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER, "  Swapchain Framebuffers Destroyed\n");
 	}
 	swapchainFramebuffers.clear();
-	
+
 
 
 	if (renderPass != VK_NULL_HANDLE)
 	{
 		vkDestroyRenderPass(device.GetDevice(), renderPass, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator));
 		renderPass = VK_NULL_HANDLE;
-		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER,"  Render Pass Destroyed\n");
+		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER, "  Render Pass Destroyed\n");
 	}
 
 
@@ -129,7 +129,7 @@ VkAttachmentDescription VulkanRenderManager::GetDefaultOutputDepthAttachmentDesc
 	depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 	depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-	
+
 	return depthAttachment;
 }
 
@@ -162,15 +162,15 @@ void VulkanRenderManager::StartFrame(std::uint32_t _clearValueCount, const VkCle
 	{
 		vkWaitForFences(device.GetDevice(), 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
 	}
-	
+
 	//Mark the image as now being in use by this frame - tying its synchronisation to this frame's fence
 	//The next frame that wants to use this image will have to wait for this frame to finish rendering to it so as to not overwrite
 	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
-	
+
 	//Reset back to unsignalled - fence will be signalled again once rendering of this frame has finished
 	vkResetFences(device.GetDevice(), 1, &(inFlightFences[currentFrame]));
 
-	
+
 	//Start recording the command buffer
 	vkResetCommandBuffer(commandBuffers[currentFrame], 0);
 	VkCommandBufferBeginInfo beginInfo{};
@@ -184,18 +184,18 @@ void VulkanRenderManager::StartFrame(std::uint32_t _clearValueCount, const VkCle
 		throw std::runtime_error("");
 	}
 
-	
+
 	//Define the render pass begin info
 	VkRenderPassBeginInfo renderPassInfo{};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	renderPassInfo.pNext = nullptr;
 	renderPassInfo.renderPass = renderPass;
 	renderPassInfo.framebuffer = swapchainFramebuffers[imageIndex];
-	renderPassInfo.renderArea.offset = {0, 0};
+	renderPassInfo.renderArea.offset = { 0, 0 };
 	renderPassInfo.renderArea.extent = swapchain.GetSwapchainExtent();
 	renderPassInfo.clearValueCount = _clearValueCount;
 	renderPassInfo.pClearValues = _clearValues;
-	
+
 	vkCmdBeginRenderPass(commandBuffers[currentFrame], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
@@ -247,8 +247,8 @@ void VulkanRenderManager::SubmitAndPresent()
 	presentInfo.pResults = nullptr;
 
 	vkQueuePresentKHR(device.GetGraphicsQueue(), &presentInfo);
-	
-	
+
+
 	currentFrame = (currentFrame + 1) % framesInFlight;
 }
 
@@ -258,6 +258,7 @@ VkCommandBuffer VulkanRenderManager::GetCurrentCommandBuffer()
 {
 	return commandBuffers[currentFrame];
 }
+
 
 
 VkRenderPass VulkanRenderManager::GetRenderPass()
@@ -286,7 +287,7 @@ void VulkanRenderManager::CreateRenderPass(VKRenderPassCleanDesc& _renderPassDes
 {
 	logger.Log(VK_LOGGER_CHANNEL::HEADING, VK_LOGGER_LAYER::RENDER_MANAGER, "\n\n\n", VK_LOGGER_WIDTH::DEFAULT, false);
 	logger.Log(VK_LOGGER_CHANNEL::HEADING, VK_LOGGER_LAYER::RENDER_MANAGER, "Creating Render Pass\n");
-	
+
 	VkRenderPassCreateInfo renderPassCreateInfo{};
 	renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	renderPassCreateInfo.pNext = nullptr;
@@ -297,7 +298,7 @@ void VulkanRenderManager::CreateRenderPass(VKRenderPassCleanDesc& _renderPassDes
 	renderPassCreateInfo.pAttachments = _renderPassDesc.attachments;
 	renderPassCreateInfo.subpassCount = _renderPassDesc.subpassCount;
 	renderPassCreateInfo.pSubpasses = _renderPassDesc.subpasses;
-	
+
 	//Loop through pAttachments and check format - if UNDEFINED, set to swapchain image format or depth format (depending on type)
 	//Can't modify original array, so remake it
 	std::vector<VkAttachmentDescription> attachments;
@@ -305,7 +306,7 @@ void VulkanRenderManager::CreateRenderPass(VKRenderPassCleanDesc& _renderPassDes
 	{
 		attachments.assign(renderPassCreateInfo.pAttachments, renderPassCreateInfo.pAttachments + renderPassCreateInfo.attachmentCount);
 	}
-	for (std::size_t i{ 0 }; i<attachments.size(); ++i)
+	for (std::size_t i{ 0 }; i < attachments.size(); ++i)
 	{
 		if (_renderPassDesc.attachmentFormats[i] == VK_FORMAT_UNDEFINED)
 		{
@@ -342,20 +343,20 @@ void VulkanRenderManager::CreateSwapchainFramebuffers(const VKRenderPassCleanDes
 	logger.Log(VK_LOGGER_CHANNEL::HEADING, VK_LOGGER_LAYER::RENDER_MANAGER, "Creating Swapchain Framebuffers\n");
 
 	//Final attachment must be swapchain
-	if (_renderPassDesc.attachmentTypes[_renderPassDesc.attachmentCount-1] != FORMAT_TYPE::SWAPCHAIN)
+	if (_renderPassDesc.attachmentTypes[_renderPassDesc.attachmentCount - 1] != FORMAT_TYPE::SWAPCHAIN)
 	{
 		logger.Log(VK_LOGGER_CHANNEL::ERROR, VK_LOGGER_LAYER::RENDER_MANAGER, "Final image in framebuffer description must be of type SWAPCHAIN");
 		throw std::runtime_error("");
 	}
 	//Final attachment must be VK_FORMAT_UNDEFINED as per the Neki standard - enforcing this prevents accidents
-	if (_renderPassDesc.attachmentFormats[_renderPassDesc.attachmentCount-1] != VK_FORMAT_UNDEFINED)
+	if (_renderPassDesc.attachmentFormats[_renderPassDesc.attachmentCount - 1] != VK_FORMAT_UNDEFINED)
 	{
 		logger.Log(VK_LOGGER_CHANNEL::ERROR, VK_LOGGER_LAYER::RENDER_MANAGER, "Final image in framebuffer description must be of format UNDEFINED");
 	}
 
 	//Create images and image views based on provided description
 	//Ignore last attachment because the Neki standard states it must be the swapchain - swapchain image is populated further down
-	for (std::size_t i{ 0 }; i<_renderPassDesc.attachmentCount-1; ++i)
+	for (std::size_t i{ 0 }; i < _renderPassDesc.attachmentCount - 1; ++i)
 	{
 		const FORMAT_TYPE formatType{ _renderPassDesc.attachmentTypes[i] };
 		VkFormat format{ _renderPassDesc.attachmentFormats[i] };
@@ -380,7 +381,7 @@ void VulkanRenderManager::CreateSwapchainFramebuffers(const VKRenderPassCleanDes
 			else
 			{
 				const VkImageUsageFlagBits flag{ (formatType == FORMAT_TYPE::DEPTH_INPUT_ATTACHMENT) ? VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT : VK_IMAGE_USAGE_SAMPLED_BIT };
-				framebufferImages.push_back(imageFactory.AllocateImage(swapchain.GetSwapchainExtent(), format, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | flag));	
+				framebufferImages.push_back(imageFactory.AllocateImage(swapchain.GetSwapchainExtent(), format, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | flag));
 			}
 			framebufferImageViews.push_back(imageFactory.CreateImageView(framebufferImages[i], format, VK_IMAGE_ASPECT_DEPTH_BIT));
 		}
@@ -392,7 +393,7 @@ void VulkanRenderManager::CreateSwapchainFramebuffers(const VKRenderPassCleanDes
 	for (std::size_t i{ 0 }; i < swapchainFramebuffers.size(); ++i)
 	{
 		framebufferImageViews.push_back(swapchain.GetSwapchainImageView(i));
-		
+
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.pNext = nullptr;
@@ -441,7 +442,7 @@ void VulkanRenderManager::CreateSyncObjects()
 	fenceInfo.pNext = nullptr;
 	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-	for (std::size_t i{ 0 }; i<swapchain.GetSwapchainSize(); ++i)
+	for (std::size_t i{ 0 }; i < swapchain.GetSwapchainSize(); ++i)
 	{
 		if (vkCreateSemaphore(device.GetDevice(), &semaphoreInfo, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator), &renderFinishedSemaphores[i]) != VK_SUCCESS)
 		{
@@ -450,10 +451,10 @@ void VulkanRenderManager::CreateSyncObjects()
 		}
 	}
 	logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER, "Successfully created sync objects for " + std::to_string(swapchain.GetSwapchainSize()) + " images\n");
-	for (std::size_t i{ 0 }; i<framesInFlight; ++i)
+	for (std::size_t i{ 0 }; i < framesInFlight; ++i)
 	{
 		if (vkCreateSemaphore(device.GetDevice(), &semaphoreInfo, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator), &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-			vkCreateFence(device.GetDevice(), &fenceInfo, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator), &inFlightFences[i]) != VK_SUCCESS)
+		    vkCreateFence(device.GetDevice(), &fenceInfo, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator), &inFlightFences[i]) != VK_SUCCESS)
 		{
 			logger.Log(VK_LOGGER_CHANNEL::ERROR, VK_LOGGER_LAYER::RENDER_MANAGER, "Failed to create per-frame sync objects\n");
 			throw std::runtime_error("");

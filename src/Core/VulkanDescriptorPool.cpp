@@ -1,6 +1,7 @@
 #include "NekiVK/Core/VulkanDescriptorPool.h"
 #include "NekiVK/Debug/VKLogger.h"
 #include <stdexcept>
+#include <algorithm>
 
 
 namespace Neki
@@ -20,7 +21,7 @@ VulkanDescriptorPool::VulkanDescriptorPool(const VKLogger& _logger, VKDebugAlloc
 	VkDescriptorPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	poolInfo.pNext = nullptr;
-	poolInfo.maxSets = 2;
+	poolInfo.maxSets = 10;
 	poolInfo.poolSizeCount = poolSizeCount;
 	poolInfo.pPoolSizes = _poolSizes;
 	poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
@@ -65,7 +66,11 @@ VulkanDescriptorPool::~VulkanDescriptorPool()
 
 VkDescriptorSet VulkanDescriptorPool::AllocateDescriptorSet(VkDescriptorSetLayout& _layout)
 {
-	ownedDescriptorSetLayouts.push_back(_layout);
+	// Track unique layouts only
+	if (std::find(ownedDescriptorSetLayouts.begin(), ownedDescriptorSetLayouts.end(), _layout) == ownedDescriptorSetLayouts.end())
+	{
+		ownedDescriptorSetLayouts.push_back(_layout);
+	}
 	
 	VkDescriptorSet descriptorSet;
 
@@ -79,7 +84,7 @@ VkDescriptorSet VulkanDescriptorPool::AllocateDescriptorSet(VkDescriptorSetLayou
 	
 	logger.Log(VK_LOGGER_CHANNEL::INFO, VK_LOGGER_LAYER::DESCRIPTOR_POOL, "Allocating a single descriptor set", VK_LOGGER_WIDTH::SUCCESS_FAILURE);
 	VkResult result{ vkAllocateDescriptorSets(device.GetDevice(), &allocInfo, &descriptorSet) };
-	logger.Log(result == VK_SUCCESS ? VK_LOGGER_CHANNEL::SUCCESS : VK_LOGGER_CHANNEL::ERROR, VK_LOGGER_LAYER::DESCRIPTOR_POOL, result == VK_SUCCESS ? "success" : "failure", VK_LOGGER_WIDTH::DEFAULT, false);
+	logger.Log(result == VK_SUCCESS ? VK_LOGGER_CHANNEL::SUCCESS : VK_LOGGER_CHANNEL::ERROR, VK_LOGGER_LAYER::DESCRIPTOR_POOL, result == VK_SUCCESS ? "success\n" : "failure", VK_LOGGER_WIDTH::DEFAULT, false);
 	if (result != VK_SUCCESS)
 	{
 		logger.Log(VK_LOGGER_CHANNEL::ERROR, VK_LOGGER_LAYER::DESCRIPTOR_POOL," (" + std::to_string(result) + ")\n", VK_LOGGER_WIDTH::DEFAULT, false);
@@ -95,19 +100,24 @@ std::vector<VkDescriptorSet> VulkanDescriptorPool::AllocateDescriptorSets(std::s
 {
 	std::vector<VkDescriptorSet> descriptorSets(_count);
 
-	for (std::size_t i{ 0 }; i<_count; ++i) { ownedDescriptorSetLayouts.push_back(_layouts[i]); }
+	for (std::size_t i{ 0 }; i<_count; ++i) {
+		if (std::find(ownedDescriptorSetLayouts.begin(), ownedDescriptorSetLayouts.end(), _layouts[i]) == ownedDescriptorSetLayouts.end())
+		{
+			ownedDescriptorSetLayouts.push_back(_layouts[i]);
+		}
+	}
 
 	//Allocate the command buffers
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.pNext = nullptr;
 	allocInfo.descriptorPool = pool;
-	allocInfo.descriptorSetCount = 1;
+	allocInfo.descriptorSetCount = static_cast<uint32_t>(_count);
 	allocInfo.pSetLayouts = _layouts;
 	
 	logger.Log(VK_LOGGER_CHANNEL::INFO, VK_LOGGER_LAYER::DESCRIPTOR_POOL, "Allocating " + std::to_string(_count) + " descriptor set" + std::string(_count == 1 ? "" : "s"), VK_LOGGER_WIDTH::SUCCESS_FAILURE);
 	VkResult result{ vkAllocateDescriptorSets(device.GetDevice(), &allocInfo, descriptorSets.data()) };
-	logger.Log(result == VK_SUCCESS ? VK_LOGGER_CHANNEL::SUCCESS : VK_LOGGER_CHANNEL::ERROR, VK_LOGGER_LAYER::COMMAND_POOL, result == VK_SUCCESS ? "success" : "failure", VK_LOGGER_WIDTH::DEFAULT, false);
+	logger.Log(result == VK_SUCCESS ? VK_LOGGER_CHANNEL::SUCCESS : VK_LOGGER_CHANNEL::ERROR, VK_LOGGER_LAYER::COMMAND_POOL, result == VK_SUCCESS ? "success\n" : "failure", VK_LOGGER_WIDTH::DEFAULT, false);
 	if (result != VK_SUCCESS)
 	{
 		logger.Log(VK_LOGGER_CHANNEL::ERROR, VK_LOGGER_LAYER::DESCRIPTOR_POOL," (" + std::to_string(result) + ")\n", VK_LOGGER_WIDTH::DEFAULT, false);

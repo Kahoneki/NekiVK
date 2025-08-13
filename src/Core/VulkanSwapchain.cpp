@@ -7,7 +7,7 @@ namespace Neki
 
 
 
-VulkanSwapchain::VulkanSwapchain(const VKLogger& _logger, VKDebugAllocator& _deviceDebugAllocator, const VulkanDevice& _device, ImageFactory& _imageFactory, VkExtent2D _windowSize)\
+VulkanSwapchain::VulkanSwapchain(const VKLogger& _logger, VKDebugAllocator& _deviceDebugAllocator, const VulkanDevice& _device, ImageFactory& _imageFactory, VkExtent2D _windowSize)
 								: logger(_logger), deviceDebugAllocator(_deviceDebugAllocator), device(_device), imageFactory(_imageFactory)
 {
 	windowSize = _windowSize;

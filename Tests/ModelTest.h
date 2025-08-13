@@ -40,8 +40,12 @@ private:
 	VkBuffer camDataUBO;
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorSet descriptorSet;
-	Neki::GPUMesh cubeMesh;
-	glm::mat4 cubeModelMatrix;
+	
+	Neki::GPUMesh modelMesh;
+	Neki::GPUMaterial modelMaterial;
+	glm::mat4 modelModelMatrix; //Like.... the model matrix for the model....
+
+	VkSampler textureSampler;
 };
 
 #endif

@@ -1,7 +1,9 @@
 #ifndef MODELLOADER_H
 #define MODELLOADER_H
 
+#include <vulkan/vulkan.h>
 #include <string>
+#include <unordered_map>
 #include <vector>
 #include <glm/glm.hpp>
 
@@ -27,20 +29,29 @@ struct ModelVertex
 	glm::vec3 bitangent;
 };
 
-enum class MODEL_TEXTURE_TYPE
+enum class MODEL_TEXTURE_TYPE : std::uint32_t
 {
-	DIFFUSE,
-	NORMAL,
-	SPECULAR,
-	METALLIC,
-	ROUGHNESS,
-	AMBIENT_OCCLUSION,
+	DIFFUSE           = 0,
+	NORMAL            = 1,
+	SPECULAR          = 2,
+	METALLIC          = 3,
+	ROUGHNESS         = 4,
+	AMBIENT_OCCLUSION = 5,
+	EMISSIVE          = 6,
+
+	NUM_MODEL_TEXTURE_TYPES = 7,
 };
 
+//Contains all the textures for a specific MODEL_TEXTURE_TYPE
 struct TextureInfo
 {
 	MODEL_TEXTURE_TYPE type;
-	std::string path;
+	std::vector<std::string> paths; //Paths to all the textures of this type
+};
+
+struct Material
+{
+	std::vector<TextureInfo> textures;
 };
 
 //A single drawable entity. A model can be composed of multiple meshes
@@ -48,7 +59,7 @@ struct Mesh
 {
 	std::vector<ModelVertex> vertices;
 	std::vector<std::uint32_t> indices;
-	std::vector<TextureInfo> textures;
+	std::size_t materialIndex;
 };
 
 //Represents an entire model, containing all of its meshes and the directory it was loaded from (e.g.: Resource Files/A/B.obj -> directory = "Resource Files/A")
@@ -56,6 +67,7 @@ struct Model
 {
 	std::string directory;
 	std::vector<Mesh> meshes;
+	std::vector<Material> materials;
 };
 
 
@@ -65,6 +77,7 @@ public:
 	//Loads a model from the specified file path
 	//Throws std::runtime_error on failure
 	static Model Load(const std::string& _filepath);
+
 
 private:
 	//Recursively process nodes in the Assimp scene graph

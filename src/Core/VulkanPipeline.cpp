@@ -37,7 +37,7 @@ VulkanPipeline::~VulkanPipeline()
 				vkDestroyShaderModule(device.GetDevice(), m, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator));
 			}
 		}
-		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::PIPELINE,"  Descriptor Set Layouts Destroyed\n");
+		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::PIPELINE,"  Shader Modules Destroyed\n");
 	}
 	shaderModules.clear();
 
