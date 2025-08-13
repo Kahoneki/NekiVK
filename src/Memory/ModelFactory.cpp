@@ -182,7 +182,7 @@ GPUModel ModelFactory::LoadModelImpl(const char* _filepath, std::unordered_map<M
 			{
 				//No textures of this type - use fallback default texture
 				ImageMetadata metadata{};
-				const char* path{ "Resource Files/DebugTexture.png" };
+				const char* path{ "NekiVK Resource Files/DebugTexture.png" };
 				VkImage imgArray{ imageFactory.AllocateImageArray(1, &path, VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_UNDEFINED, MODEL_TEXTURE_TYPE::NUM_MODEL_TEXTURE_TYPES, _flipImage, &metadata) };
 				imgArrayView = imageFactory.CreateImageView(imgArray, metadata.vkFormat, VK_IMAGE_ASPECT_COLOR_BIT, true, 1);
 			}

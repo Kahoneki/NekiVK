@@ -49,8 +49,8 @@ FetchContent_MakeAvailable(assimp)
 target_link_libraries(NekiVK PRIVATE assimp)
 
 
-#Copy all resource files to the output directory, maintaining subdirectory structure
-file(COPY "${CMAKE_SOURCE_DIR}/Resource Files/" DESTINATION "${CMAKE_BINARY_DIR}/Resource Files/")
+#Copy all NekiVK resource files to the output directory, maintaining subdirectory structure
+file(COPY "${CMAKE_SOURCE_DIR}/NekiVK Resource Files/" DESTINATION "${CMAKE_BINARY_DIR}/NekiVK Resource Files/")
 
 
 

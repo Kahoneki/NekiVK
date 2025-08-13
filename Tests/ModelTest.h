@@ -37,15 +37,15 @@ private:
 	std::unique_ptr<Neki::VulkanRenderManager> vulkanRenderManager;
 	std::unique_ptr<Neki::VulkanGraphicsPipeline> vulkanGraphicsPipeline;
 
-	VkBuffer camDataUBO;
-	VkDescriptorSetLayout descriptorSetLayout;
-	VkDescriptorSet descriptorSet;
+	VkBuffer camDataUBO{};
+	VkDescriptorSetLayout descriptorSetLayout{};
+	VkDescriptorSet descriptorSet{};
 	
-	Neki::GPUMesh modelMesh;
-	Neki::GPUMaterial modelMaterial;
-	glm::mat4 modelModelMatrix; //Like.... the model matrix for the model....
+	Neki::GPUMesh modelMesh{};
+	Neki::GPUMaterial modelMaterial{};
+	glm::mat4 modelModelMatrix{}; //Like.... the model matrix for the model....
 
-	VkSampler textureSampler;
+	VkSampler textureSampler{};
 };
 
 #endif
