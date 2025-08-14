@@ -11,24 +11,16 @@ target_include_directories(NekiVK PUBLIC include)
 
 
 
-#Propagate public dependencies
-include(FetchContent)
-
 #Vulkan
-find_package(Vulkan REQUIRED)
+find_package(Vulkan REQUIRED) #Intercepted by vcpkg toolchain file
 target_link_libraries(NekiVK PUBLIC Vulkan::Vulkan)
 
 #GLM
-FetchContent_Declare(glm GIT_REPOSITORY https://github.com/g-truc/glm.git GIT_TAG 0.9.9.8)
-FetchContent_MakeAvailable(glm)
-target_link_libraries(NekiVK PUBLIC glm)
+find_package(glm CONFIG REQUIRED)
+target_link_libraries(NekiVK PUBLIC glm::glm)
 
 #GLFW
-FetchContent_Declare(glfw GIT_REPOSITORY https://github.com/glfw/glfw.git GIT_TAG 3.4)
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(glfw)
+find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(NekiVK PUBLIC glfw)
 
 
@@ -36,17 +28,12 @@ target_link_libraries(NekiVK PUBLIC glfw)
 #Handle private dependencies
 
 #stb_image
-FetchContent_Declare(stb_image GIT_REPOSITORY https://github.com/nothings/stb.git GIT_TAG master)
-FetchContent_MakeAvailable(stb_image)
-target_include_directories(NekiVK PRIVATE ${stb_image_SOURCE_DIR})
+find_package(Stb REQUIRED)
+target_include_directories(NekiVK PRIVATE ${Stb_INCLUDE_DIR})
 
 #Assimp
-FetchContent_Declare(assimp GIT_REPOSITORY "https://github.com/assimp/assimp.git" GIT_TAG v5.4.1)
-set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
-set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(assimp)
-target_link_libraries(NekiVK PRIVATE assimp)
+find_package(assimp CONFIG REQUIRED)
+target_link_libraries(NekiVK PRIVATE assimp::assimp)
 
 
 #Copy all NekiVK resource files to the output directory, maintaining subdirectory structure

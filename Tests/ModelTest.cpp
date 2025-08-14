@@ -248,7 +248,7 @@ void ModelTest::CreatePipeline()
 	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
 	VkDescriptorSetLayout descSetLayouts[]{ descriptorSetLayout, modelFactory->GetMaterialDescriptorSetLayout() };
-	
+
 	vulkanGraphicsPipeline = std::make_unique<Neki::VulkanGraphicsPipeline>(*logger, *deviceDebugAllocator, *vulkanDevice, &piplDesc, "Tests/Shaders/model.vert", "Tests/Shaders/model.frag", nullptr, nullptr, 2, descSetLayouts, 1, &pushConstantRange);
 }
 
@@ -272,8 +272,8 @@ void ModelTest::Run()
 		VkDescriptorSet descSets[]{ descriptorSet, modelMaterial.descriptorSet };
 		vkCmdBindDescriptorSets(vulkanRenderManager->GetCurrentCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanGraphicsPipeline->GetPipelineLayout(), 0, 2, descSets, 0, nullptr);
 
-		float speed{ 0.01f };
-		modelModelMatrix = glm::rotate(modelModelMatrix, glm::radians(speed), glm::vec3(0,0,1));
+		float speed{ 0.3f };
+		modelModelMatrix = glm::rotate(modelModelMatrix, glm::radians(speed), glm::vec3(0, 0, 1));
 		vkCmdPushConstants(vulkanRenderManager->GetCurrentCommandBuffer(), vulkanGraphicsPipeline->GetPipelineLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &modelModelMatrix);
 
 		//Define viewport
