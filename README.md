@@ -28,6 +28,10 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(NekiVK)
 target_link_libraries(EXECUTABLE_NAME PRIVATE NekiVK)
 ```
+Note: The Vulkan SDK is a prerequisite for working with NekiVK. Download here:  
+- Windows / Linux (Debian/Ubuntu) / MacOS - https://vulkan.lunarg.com/  
+- Arch - AUR Packages: vulkan-headers, vulkan-validation-layers, vulkan-man-pages, vulkan-tools  
+
 The classes can then be included in your application code with `#include <NekiVK/NekiVK.h>`
 Example:
 ```cpp
