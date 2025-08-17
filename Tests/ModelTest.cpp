@@ -21,7 +21,7 @@ ModelTest::ModelTest()
 
 	vulkanCommandPool = std::make_unique<Neki::VulkanCommandPool>(*logger, *deviceDebugAllocator, *vulkanDevice, Neki::VK_COMMAND_POOL_TYPE::GRAPHICS);
 
-	VkDescriptorPoolSize descriptorPoolSizes[]{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 6 } };
+	VkDescriptorPoolSize descriptorPoolSizes[]{ { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1 }, { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 7 } };
 	vulkanDescriptorPool = std::make_unique<Neki::VulkanDescriptorPool>(*logger, *deviceDebugAllocator, *vulkanDevice, 2, descriptorPoolSizes);
 
 	bufferFactory = std::make_unique<Neki::BufferFactory>(*logger, *deviceDebugAllocator, *vulkanDevice, *vulkanCommandPool);
@@ -298,10 +298,10 @@ void ModelTest::Run()
 		vulkanRenderManager->SubmitAndPresent();
 	}
 
-	vkDeviceWaitIdle(vulkanDevice->GetDevice());
-
-	//Todo: this is a temp fix for a shutdownn bug - regular surface destruction results in a segfault, destroying swapchain (and hence surface) first fixes this, but it's a weird workaround.
-	vulkanSwapchain.reset();
+//Todo: this is a temp fix for a shutdown bug - regular surface destruction results in a segfault, destroying swapchain (and hence surface) first fixes this, but it's a weird workaround.
+//	vulkanGraphicsPipeline.reset();
+//	vulkanRenderManager.reset();
+//	vulkanSwapchain.reset();
 }
 
 
@@ -310,8 +310,10 @@ void ModelTest::Run()
 int main()
 {
 	glfwInit();
-	ModelTest modelTest{};
-	modelTest.Run();
+	{
+		ModelTest modelTest{};
+		modelTest.Run();
+	}
 	glfwTerminate();
 
 	return 0;

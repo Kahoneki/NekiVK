@@ -34,13 +34,12 @@ VulkanSwapchain::~VulkanSwapchain()
 {
 	logger.Log(VK_LOGGER_CHANNEL::HEADING, VK_LOGGER_LAYER::SWAPCHAIN,"Shutting down VulkanSwapchain\n");
 
+	vkDeviceWaitIdle(device.GetDevice());
+	
 	if (!swapchainImageViews.empty())
 	{
-		for (VkImageView v : swapchainImageViews)
-		{
-			vkDestroyImageView(device.GetDevice(), v, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator));
-		}
-		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::SWAPCHAIN,"  Swapchain Image Views Destroyed\n");
+		imageFactory.FreeImageViews(swapchainImageViews.size(), swapchainImageViews.data());
+		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::SWAPCHAIN, "  Swapchain Image Views Destroyed\n");
 	}
 	swapchainImageViews.clear();
 
@@ -314,6 +313,7 @@ void VulkanSwapchain::CreateSwapchainImageViews()
 		createInfo.subresourceRange.layerCount = 1;
 
 		logger.Log(VK_LOGGER_CHANNEL::INFO, VK_LOGGER_LAYER::SWAPCHAIN, "Creating image view " + std::to_string(i), VK_LOGGER_WIDTH::SUCCESS_FAILURE);
+//		swapchainImageViews[i] = imageFactory.CreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 		VkResult result = vkCreateImageView(device.GetDevice(), &createInfo, static_cast<const VkAllocationCallbacks*>(deviceDebugAllocator), &swapchainImageViews[i]);
 		logger.Log(result == VK_SUCCESS ? VK_LOGGER_CHANNEL::SUCCESS : VK_LOGGER_CHANNEL::ERROR, VK_LOGGER_LAYER::SWAPCHAIN, result == VK_SUCCESS ? "success\n" : "failure\n", VK_LOGGER_WIDTH::DEFAULT, false);
 		if (result != VK_SUCCESS)

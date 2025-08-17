@@ -5,8 +5,6 @@
 #include <climits>
 #include <stdexcept>
 #include <algorithm>
-#include <stb_image.h>
-
 
 namespace Neki
 {

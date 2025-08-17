@@ -20,6 +20,8 @@ VulkanPipeline::VulkanPipeline(const VKLogger &_logger, VKDebugAllocator &_devic
 VulkanPipeline::~VulkanPipeline()
 {
 	logger.Log(VK_LOGGER_CHANNEL::HEADING, VK_LOGGER_LAYER::PIPELINE,"Shutting down VulkanPipeline\n");
+
+	vkDeviceWaitIdle(device.GetDevice());
 	
 	if (pipeline != VK_NULL_HANDLE)
 	{
