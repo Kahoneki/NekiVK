@@ -35,6 +35,8 @@ VulkanRenderManager::~VulkanRenderManager()
 {
 	logger.Log(VK_LOGGER_CHANNEL::HEADING, VK_LOGGER_LAYER::RENDER_MANAGER, "Shutting down VulkanRenderManager\n");
 
+	vkDeviceWaitIdle(device.GetDevice());
+	
 	if (!inFlightFences.empty())
 	{
 		for (VkFence& f : inFlightFences)
@@ -84,6 +86,19 @@ VulkanRenderManager::~VulkanRenderManager()
 		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER, "  Swapchain Framebuffers Destroyed\n");
 	}
 	swapchainFramebuffers.clear();
+	if (!framebufferImageViews.empty())
+	{
+		imageFactory.FreeImageViews(framebufferImageViews.size(), framebufferImageViews.data());
+		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER, "  Framebuffer Image Views Destroyed\n");
+	}
+	framebufferImageViews.clear();
+	
+	if (!framebufferImages.empty())
+	{
+		imageFactory.FreeImages(framebufferImages.size(), framebufferImages.data());
+		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER, "  Framebuffer Images Destroyed\n");
+	}
+	framebufferImages.clear();
 
 
 
@@ -93,8 +108,6 @@ VulkanRenderManager::~VulkanRenderManager()
 		renderPass = VK_NULL_HANDLE;
 		logger.Log(VK_LOGGER_CHANNEL::SUCCESS, VK_LOGGER_LAYER::RENDER_MANAGER, "  Render Pass Destroyed\n");
 	}
-
-
 }
 
 
