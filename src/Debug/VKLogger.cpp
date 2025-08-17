@@ -4,7 +4,10 @@
 #include <iomanip>
 
 #if defined(_WIN32)
-#include <windows.h>
+	#include <windows.h>
+	#if defined(ERROR)
+		#undef ERROR //Error is used for VK_LOGGER_CHANNEL::ERROR
+	#endif
 #endif
 
 namespace Neki
